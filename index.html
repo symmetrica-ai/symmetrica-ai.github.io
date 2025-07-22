@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symmetrica</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      /* background: linear-gradient(135deg, #061832, #093f6e); */
+      color: white;
+    }
+
+    /* 
+    body {
+      background: url('images/background.svg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+    } */
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin: 0;
+    }
+
+    h1 {
+      /* background-image: linear-gradient(135deg, #1ef9df, #10fda8); */
+      background-image: linear-gradient(135deg, #cef9df, #f0fdfd, #bef9df);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    svg {
+      position: absolute;
+      top: -25%;
+      left: -25%;
+      width: 150%;
+      height: 150%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hero">
+    <div class="background">
+      <svg id="waves" viewBox="0 0 1440 900" preserveAspectRatio="xMinYMin slice">
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <!-- <stop offset="0%" stop-color="#061832" />
+            <stop offset="100%" stop-color="#093f6e" /> -->
+            <stop offset="0%" stop-color="#010b3f" />
+            <stop offset="50%" stop-color="#052e63" />
+            <stop offset="100%" stop-color="#046b9c" />
+          </linearGradient>
+        </defs>
+
+        <!-- Background gradient -->
+        <rect width="1440" height="900" fill="url(#grad)" />
+
+        <!-- Groups -->
+        <g id="group1"></g>
+        <g id="group2"></g>
+        <g id="group3"></g>
+      </svg>
+    </div>
+
+    <div class="content">
+      <h1>Symmetrica</h1>
+      <p>From Research to Real-World Impactful AI</p>
+    </div>
+  </div>
+  <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="3000" height="900">
+  <defs>
+    <linearGradient id="theGradient" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse" >
+      <stop stop-color="#3b1c52" offset="20%"/>
+      <stop stop-color="#b51a84" offset="50%"/>
+      <stop stop-color="#51F7FE" offset="100%"/> 
+    </linearGradient>
+  </defs>
+  <g fill="url(#theGradient)"  text-anchor="middle" font-size="100">
+    <text x="130" y="300">Symmetrica</text>
+    </g>
+</svg> -->
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script> -->
+  <script src="scripts/gsap.min.js"></script>
+  <script>
+    const svgHeight = 900;
+
+    // helper: generate wave path
+    function generateWave(yOffset, phase, amplitude) {
+      const segments = 64;
+      const frequency = 2
+      let d = `M 0 ${yOffset}`;
+      for (let i = 1; i <= segments; i++) {
+        const x = (1440 / segments) * i;
+        const y = yOffset + Math.sin(2 * Math.PI * frequency * (i / segments + phase)) * amplitude;
+        d += ` L ${x} ${y}`;
+      }
+      return d;
+    }
+
+    // animate one path
+    function animatePath(path, baseY, amplitude, duration, index) {
+      gsap.to({ phase: 0 }, {
+        phase: 1,
+        duration: duration + index * 0.1,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        onUpdate: function () {
+          path.setAttribute("d", generateWave(baseY, this.targets()[0].phase, amplitude));
+        }
+      });
+    }
+
+    // create one group
+    function createGroup({ target, numLines, spacing, amplitude, speed, opacityRange, fromBottom = false, totalHeight = null }) {
+      const group = document.querySelector(target);
+      for (let i = 0; i < numLines; i++) {
+        let y;
+        if (fromBottom) {
+          const heightCovered = (totalHeight ?? svgHeight);
+          y = svgHeight - (i * spacing);
+          if (y < svgHeight - heightCovered) continue; // stay within the designated area
+        } else {
+          y = i * spacing + 10 * Math.sin(i / 4.5 * Math.PI * 2) ** 2;
+        }
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "white");
+        path.setAttribute("stroke-opacity", (opacityRange[0] + Math.random() * (opacityRange[1] - opacityRange[0])).toFixed(2));
+        path.setAttribute("stroke-width", "1");
+        // path.setAttribute("filter", "blur(1px)");
+
+
+        path.setAttribute("d", generateWave(y, 0, amplitude));
+        group.appendChild(path);
+
+        animatePath(path, y, amplitude, speed, i);
+      }
+    }
+
+    // Group 1: Foreground, tighter, bottom-aligned
+    createGroup({
+      target: '#group1',
+      numLines: 15,
+      spacing: 10,
+      amplitude: 30,
+      speed: 4,
+      opacityRange: [0.05, 0.1],
+      fromBottom: true,
+      totalHeight: 300
+    });
+
+    // Group 2: Middle
+    createGroup({
+      target: '#group2',
+      numLines: 20,
+      spacing: 30,
+      amplitude: 30,
+      speed: 8,
+      opacityRange: [0.0, 0.01]
+    });
+
+    // Group 3: Background
+    createGroup({
+      target: '#group3',
+      numLines: 15,
+      spacing: 20,
+      amplitude: 20,
+      speed: 12,
+      opacityRange: [0.01, 0.03]
+    });
+
+    // Text animations
+    gsap.from(".content h1", {
+      y: -50,
+      opacity: 0,
+      duration: 1.5,
+      ease: "power2.out"
+    });
+    gsap.from(".content p", {
+      y: 50,
+      opacity: 0,
+      duration: 1.5,
+      ease: "power2.out",
+      delay: 0.3
+    });
+
+
+    const container = document.getElementsByClassName("content")[0];
+
+    const gridWidth = 50;
+    const gridHeight = 50;
+    const gridRows = 28;
+    const gridColumns = 40;
+
+    // Create the grid cells
+    for (let i = 0; i < gridRows * gridColumns; i++) {
+      const y = Math.floor(i / gridColumns) * gridHeight;
+      const x = (i * gridWidth) % (gridColumns * gridWidth);
+
+      const cell = document.createElement("div");
+      cell.style.position = "absolute";
+      cell.style.border = "1px solid yellow";
+      cell.style.opacity = "0.008"
+      cell.style.width = `${gridWidth - 1}px`;
+      cell.style.height = `${gridHeight - 1}px`;
+      cell.style.top = `${y}px`;
+      cell.style.left = `${x}px`;
+
+      container.prepend(cell);
+    }
+  </script>
+
+</body>
+
+</html>
