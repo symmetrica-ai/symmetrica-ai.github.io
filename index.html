@@ -25,12 +25,12 @@
       color: white;
     }
 
-    /* 
+    
     body {
       background: url('images/background.svg') no-repeat center center fixed;
       background-size: cover;
       font-family: sans-serif;
-    } */
+    }
 
 
     /* Urbanist font */
@@ -74,7 +74,7 @@
 
     h1 {
       /* background-image: linear-gradient(135deg, #1ef9df, #10fda8); */
-      background-image: linear-gradient(135deg, #cef9df, #f0fdfd, #bef9df);
+      background-image: linear-gradient(135deg, #def9df, #f0fdfd, #def9df);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -111,7 +111,7 @@
         </defs>
 
         <!-- Background gradient -->
-        <rect width="1440" height="900" fill="url(#grad)" />
+        <!-- <rect width="1440" height="900" fill="url(#grad)" /> -->
 
         <!-- Groups -->
         <g id="group1"></g>
@@ -204,32 +204,32 @@
       numLines: 15,
       spacing: 10,
       amplitude: 30,
-      speed: 4,
+      speed: 8,
       opacityRange: [0.05, 0.1],
       fromBottom: true,
       totalHeight: 300
     });
 
-    // Group 2: Middle
-    createGroup({
-      target: '#group2',
-      numLines: 20,
-      spacing: 30*(1+.2*Math.random()),
-      amplitude: 30,
-      speed: 8,
-      opacityRange: [0.0, 0.01],
-      // opacityRange: [1, 1], // DEBUG
-    });
+    // // Group 2: Middle
+    // createGroup({
+    //   target: '#group2',
+    //   numLines: 20,
+    //   spacing: 30*(1+.2*Math.random()),
+    //   amplitude: 30,
+    //   speed: 8,
+    //   opacityRange: [0.0, 0.01],
+    //   // opacityRange: [1, 1], // DEBUG
+    // });
 
-    // Group 3: Background
-    createGroup({
-      target: '#group3',
-      numLines: 15,
-      spacing: 20,
-      amplitude: 20,
-      speed: 12,
-      opacityRange: [0.01, 0.03]
-    });
+    // // Group 3: Background
+    // createGroup({
+    //   target: '#group3',
+    //   numLines: 15,
+    //   spacing: 20,
+    //   amplitude: 20,
+    //   speed: 12,
+    //   opacityRange: [0.01, 0.03]
+    // });
 
     // Text animations
     gsap.from(".content h1", {
@@ -262,7 +262,7 @@
       const cell = document.createElement("div");
       cell.style.position = "absolute";
       cell.style.border = "1px solid yellow";
-      cell.style.opacity = "0.008"
+      cell.style.opacity = "0.01"
       cell.style.width = `${gridWidth - 1}px`;
       cell.style.height = `${gridHeight - 1}px`;
       cell.style.top = `${y}px`;
